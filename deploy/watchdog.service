@@ -1,0 +1,33 @@
+[Unit]
+Description=Watchdog server resource monitor
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=watchdog
+Group=watchdog
+EnvironmentFile=/etc/watchdog/watchdog.env
+Environment=WATCHDOG_DATA_DIR=/var/lib/watchdog
+ExecStart=/usr/local/bin/watchdog
+WorkingDirectory=/var/lib/watchdog
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=35
+StateDirectory=watchdog
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+# Keep the host's mount namespace visible: PrivateTmp/ProtectHome distort disk measurements.
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

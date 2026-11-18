@@ -1,0 +1,9 @@
+/bin/
+/data/
+/.cache/
+/.env
+/watchdog.env
+/deploy/*.env
+*.db
+*.db-shm
+*.db-wal

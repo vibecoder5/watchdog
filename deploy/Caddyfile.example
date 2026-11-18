@@ -1,0 +1,6 @@
+# Add this site block to an existing Caddy configuration; do not replace other sites.
+# DNS must point to the server. Keep watchdog bound to localhost.
+# In watchdog.env set WATCHDOG_SECURE_COOKIE=true, then restart watchdog.
+watchdog.example.com {
+    reverse_proxy 127.0.0.1:8080
+}

@@ -1,0 +1,27 @@
+name: Verify and build
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Formatting
+        run: test -z "$(gofmt -l cmd internal)"
+      - run: go vet ./...
+      - run: go test -race ./...
+      - name: Build Linux binaries
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o bin/watchdog-linux-amd64 ./cmd/watchdog
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -o bin/watchdog-linux-arm64 ./cmd/watchdog
+      - uses: actions/upload-artifact@v4
+        with:
+          name: watchdog-linux
+          path: |
+            bin/watchdog-linux-*
+            deploy/
